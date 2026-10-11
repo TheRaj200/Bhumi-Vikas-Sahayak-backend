@@ -28,7 +28,7 @@ export const systemController = {
   getMeta(_req, res) {
     try {
       return res.json({
-        app_name: 'NiyamSetu',
+        app_name: 'Bhumi Vikas Sahayak',
         contract_version: config.contractVersion,
         version: {
           rules_source: config.rulesSource,

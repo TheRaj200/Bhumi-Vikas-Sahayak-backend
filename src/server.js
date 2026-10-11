@@ -18,7 +18,7 @@ async function start() {
   if (!isLlmConfigured()) console.warn('[llm] ANTHROPIC_API_KEY / ANTHROPIC_MODEL not set — questions will return evidence_only.');
 
   createApp().listen(config.port, () => {
-    console.log(`[server] NiyamSetu API on http://localhost:${config.port}`);
+    console.log(`[server] Bhumi Vikas Sahayak API on http://localhost:${config.port}`);
   });
 }
 

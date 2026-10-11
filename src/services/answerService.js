@@ -101,7 +101,7 @@ export const answerService = {
     // 3. LLM Generation if configured
     if (isLlmConfigured()) {
       try {
-        const systemPrompt = `You are NiyamSetu, an official regulatory assistant for the Madhya Pradesh Bhumi Vikas Rules, 2012 (consolidated to 6 March 2025).
+        const systemPrompt = `You are Bhumi Vikas Sahayak, an official regulatory assistant for the Madhya Pradesh Bhumi Vikas Rules, 2012 (consolidated to 6 March 2025).
 Answer the user's question clearly, accurately, and concisely in ${lang === 'hi' ? 'Hindi' : 'English'}.
 Strict Requirements:
 1. Base your answer solely on the provided Rule Excerpts. Never invent fees, numbers, setbacks, or rules.
