@@ -1,0 +1,98 @@
+[
+  {
+    "sample_key": "sample-a-200sqm-9m-road",
+    "title": "Sample A — 200 sq m house on a 9 m road",
+    "is_sample": true,
+    "inputs": {
+      "plot_area_sqm": 200,
+      "plot_width_m": 10,
+      "plot_depth_m": 20,
+      "road_width_m": 9,
+      "road_facing_side": "north",
+      "land_use_zone": "residential",
+      "building_type": "residential",
+      "building_form": "detached",
+      "application_type": "building_permission",
+      "proposed": {
+        "building_height_m": 10,
+        "floors": 3,
+        "footprint_width_m": 5.5,
+        "footprint_depth_m": 14.5,
+        "front_setback_m": 3.0,
+        "rear_setback_m": 2.5,
+        "side_setback_left_m": 1.5,
+        "side_setback_right_m": 3.0,
+        "total_built_up_area_sqm": 240,
+        "has_lift": false
+      }
+    }
+  },
+  {
+    "sample_key": "sample-b-missing-info",
+    "title": "Sample B — 150 sq m plot, details missing",
+    "is_sample": true,
+    "inputs": {
+      "plot_area_sqm": 150,
+      "road_width_m": 10,
+      "building_type": "residential",
+      "proposed": {
+        "building_height_m": 9,
+        "front_setback_m": 3.0
+      }
+    }
+  },
+  {
+    "sample_key": "sample-c-tall-building",
+    "title": "Sample C — 20 m residential building, 1600 sq m plot",
+    "is_sample": true,
+    "inputs": {
+      "plot_area_sqm": 1600,
+      "plot_width_m": 32,
+      "plot_depth_m": 50,
+      "road_width_m": 18,
+      "road_facing_side": "east",
+      "land_use_zone": "residential",
+      "building_type": "residential",
+      "building_form": "detached",
+      "application_type": "building_permission",
+      "proposed": {
+        "building_height_m": 20,
+        "floors": 6,
+        "footprint_width_m": 18,
+        "footprint_depth_m": 35,
+        "front_setback_m": 9.0,
+        "rear_setback_m": 6.0,
+        "side_setback_left_m": 7.0,
+        "side_setback_right_m": 7.0,
+        "total_built_up_area_sqm": 2700,
+        "entrance_width_m": 4.5,
+        "has_lift": true
+      }
+    }
+  },
+  {
+    "sample_key": "sample-d-farm-house",
+    "title": "Sample D — Farm house on 0.5 ha agricultural land",
+    "is_sample": true,
+    "inputs": {
+      "plot_area_sqm": 5000,
+      "plot_width_m": 50,
+      "plot_depth_m": 100,
+      "road_width_m": 9,
+      "land_use_zone": "agricultural",
+      "building_type": "farm_house",
+      "proposed": {
+        "building_height_m": 7,
+        "floors": 1,
+        "footprint_width_m": 20,
+        "footprint_depth_m": 20,
+        "front_setback_m": 15,
+        "rear_setback_m": 65,
+        "side_setback_left_m": 15,
+        "side_setback_right_m": 15,
+        "total_built_up_area_sqm": 400,
+        "live_trees_count": 60
+      }
+    }
+  }
+]

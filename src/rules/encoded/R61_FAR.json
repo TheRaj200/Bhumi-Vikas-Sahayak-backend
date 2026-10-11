@@ -1,0 +1,196 @@
+{
+  "rule_id": "R61_FAR",
+  "rule_ref": "61",
+  "parent_rule": "61",
+  "title_en": "Floor Area Ratio (FAR) by use group — Table 8",
+  "title_hi": "उपयोग समूह के अनुसार फर्श क्षेत्र अनुपात (FAR) — तालिका 8",
+  "topic": "far",
+  "jurisdiction": "Madhya Pradesh (applies in Bhopal)",
+  "source_document": "MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf",
+  "source_version": "2025-03-06",
+  "related_rules": ["42", "48", "103"],
+  "interpretation_notes": "Table 8 is applied to buildings up to 12.5 m; taller buildings use Rule 42 Tables 4/5. FAR achieved = total built-up area / plot area. The table footnote says FAR and density may be adopted as provided in the Development Plan (see also Rule 103) — shown as a note on every FAR result. Premium FAR (61(7)) up to 25% of base FAR is discretionary: values above base FAR but within 1.25 × base go to manual review. FAR exemptions in notes (1)–(6) (servant quarters, covered parking, EWS/LIG, slum redevelopment) are not encoded.",
+  "checks": [
+    {
+      "check_key": "far_residential",
+      "kind": "check",
+      "title_en": "FAR — residential",
+      "title_hi": "FAR — आवासीय",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 12.5 }
+        ]
+      },
+      "required_inputs": ["plot_area_sqm", "proposed.total_built_up_area_sqm"],
+      "logic": { "type": "constant", "value": 1.25 },
+      "compare": { "entered": "derived.far_achieved", "operator": "lte" },
+      "unit": "ratio",
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "61-7-premium-far",
+          "text_en": "Premium FAR up to 25% of the base FAR may be provided at rates decided by the State Government (61(7)).",
+          "text_hi": "आधार FAR के 25% तक प्रीमियम FAR राज्य सरकार द्वारा तय दर पर दिया जा सकता है (61(7))।",
+          "when": {
+            "all": [
+              { "field": "derived.far_achieved", "op": "gt", "value": { "value_from": "required", "factor": 1 } },
+              { "field": "derived.far_achieved", "op": "lte", "value": { "value_from": "required", "factor": 1.25 } }
+            ]
+          },
+          "effect": "manual_review",
+          "reason": "exception_may_apply",
+          "quote": "In addition to the FAR as mentioned in above said table, additional FAR as Premium Floor Area Ratio may be provided over and above which shall not exceed 25% of the Base FAR.",
+          "page": 84
+        }
+      ],
+      "notes_en": ["FAR and density may be adopted as provided in the Development Plan of the town."],
+      "notes_hi": ["FAR और घनत्व नगर की विकास योजना के अनुसार अपनाए जा सकते हैं।"],
+      "source": { "clause": "61, Table 8", "page": 83, "quote": "1. Resdential 1.25" },
+      "extra_quotes": [
+        { "clause": "61, Table 8 footnote", "page": 83, "quote": "F.A.R and Density may be adopted as provided in the Development Plans of respective towns." }
+      ],
+      "explain_en": "Maximum FAR for residential use is {required} (Rule 61, Table 8). Entered FAR is {entered}.",
+      "explain_hi": "आवासीय उपयोग के लिए अधिकतम FAR {required} है (नियम 61, तालिका 8)। दर्ज FAR {entered} है।"
+    },
+    {
+      "check_key": "far_commercial",
+      "kind": "check",
+      "title_en": "FAR — commercial (by centre category)",
+      "title_hi": "FAR — वाणिज्यिक (केंद्र श्रेणी अनुसार)",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "commercial" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 12.5 }
+        ]
+      },
+      "required_inputs": ["commercial_category", "plot_area_sqm", "proposed.total_built_up_area_sqm"],
+      "logic": {
+        "type": "lookup",
+        "input": "commercial_category",
+        "missing_key": "manual_review",
+        "map": {
+          "city_centre": 2.50,
+          "sub_city_centre": 2.00,
+          "community_centre": 1.75,
+          "local_shopping_centre": 1.50,
+          "convenience_shopping_centre": 1.25
+        }
+      },
+      "compare": { "entered": "derived.far_achieved", "operator": "lte" },
+      "unit": "ratio",
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "61-7-premium-far",
+          "text_en": "Premium FAR up to 25% of the base FAR may be provided at rates decided by the State Government (61(7)).",
+          "text_hi": "आधार FAR के 25% तक प्रीमियम FAR राज्य सरकार द्वारा तय दर पर दिया जा सकता है (61(7))।",
+          "when": {
+            "all": [
+              { "field": "derived.far_achieved", "op": "gt", "value": { "value_from": "required", "factor": 1 } },
+              { "field": "derived.far_achieved", "op": "lte", "value": { "value_from": "required", "factor": 1.25 } }
+            ]
+          },
+          "effect": "manual_review",
+          "reason": "exception_may_apply",
+          "quote": "In addition to the FAR as mentioned in above said table, additional FAR as Premium Floor Area Ratio may be provided over and above which shall not exceed 25% of the Base FAR.",
+          "page": 84
+        }
+      ],
+      "notes_en": ["FAR and density may be adopted as provided in the Development Plan of the town."],
+      "notes_hi": ["FAR और घनत्व नगर की विकास योजना के अनुसार अपनाए जा सकते हैं।"],
+      "source": {
+        "clause": "61, Table 8",
+        "page": 83,
+        "quote": "2. Commercial 2.50 City Centre 2.00 Sub-city center 1.75 Community Center 1.50 Local Shopping Centre 1.25 Convenience Shopping Centre"
+      },
+      "extra_quotes": [
+        { "clause": "61, Table 8 footnote", "page": 83, "quote": "F.A.R and Density may be adopted as provided in the Development Plans of respective towns." }
+      ],
+      "explain_en": "Maximum FAR for this commercial category is {required} (Rule 61, Table 8). Entered FAR is {entered}.",
+      "explain_hi": "इस वाणिज्यिक श्रेणी के लिए अधिकतम FAR {required} है (नियम 61, तालिका 8)। दर्ज FAR {entered} है।"
+    },
+    {
+      "check_key": "far_public_semi_public",
+      "kind": "check",
+      "title_en": "FAR — public / semi-public",
+      "title_hi": "FAR — सार्वजनिक / अर्ध-सार्वजनिक",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "public_semi_public" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 12.5 }
+        ]
+      },
+      "required_inputs": ["plot_area_sqm", "proposed.total_built_up_area_sqm"],
+      "logic": { "type": "constant", "value": 1.00 },
+      "compare": { "entered": "derived.far_achieved", "operator": "lte" },
+      "unit": "ratio",
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": ["FAR and density may be adopted as provided in the Development Plan of the town."],
+      "notes_hi": ["FAR और घनत्व नगर की विकास योजना के अनुसार अपनाए जा सकते हैं।"],
+      "source": { "clause": "61, Table 8", "page": 83, "quote": "3. Public 1.00 Administrative Areas / Education and" },
+      "explain_en": "Maximum FAR for public / semi-public use is {required} (Rule 61, Table 8). Entered FAR is {entered}.",
+      "explain_hi": "सार्वजनिक / अर्ध-सार्वजनिक उपयोग के लिए अधिकतम FAR {required} है (नियम 61, तालिका 8)। दर्ज FAR {entered} है।"
+    },
+    {
+      "check_key": "far_industrial",
+      "kind": "reference",
+      "title_en": "FAR — industrial (as per Rule 48)",
+      "title_hi": "FAR — औद्योगिक (नियम 48 के अनुसार)",
+      "applies_when": { "field": "building_type", "op": "eq", "value": "industrial" },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "61-industrial-rule-48",
+          "text_en": "Industrial FAR is as per Rule 48, which is not encoded.",
+          "text_hi": "औद्योगिक FAR नियम 48 के अनुसार है, जो एन्कोड नहीं किया गया है।",
+          "effect": "manual_review",
+          "reason": "ambiguous"
+        }
+      ],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": { "clause": "61, Table 8", "page": 83, "quote": "4. Industrial as per rule as per rule 48" },
+      "explain_en": "Industrial FAR is governed by Rule 48 (Rule 61, Table 8).",
+      "explain_hi": "औद्योगिक FAR नियम 48 से तय होता है (नियम 61, तालिका 8)।"
+    },
+    {
+      "check_key": "far_other_use",
+      "kind": "reference",
+      "title_en": "FAR — use group not listed in Table 8",
+      "title_hi": "FAR — तालिका 8 में न दिया गया उपयोग समूह",
+      "applies_when": { "field": "building_type", "op": "eq", "value": "shop_cum_residence" },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "61-not-listed",
+          "text_en": "Table 8 has no separate row for shop-cum-residence. Manual review required.",
+          "text_hi": "तालिका 8 में दुकान-सह-आवास के लिए अलग पंक्ति नहीं है। मैनुअल समीक्षा आवश्यक।",
+          "effect": "manual_review",
+          "reason": "ambiguous"
+        }
+      ],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": { "clause": "61", "page": 83, "quote": "The Floor Area Ratio (FAR) for different use group shall be as mentioned in Table 8" },
+      "explain_en": "Table 8 of Rule 61 does not list this use group separately.",
+      "explain_hi": "नियम 61 की तालिका 8 में यह उपयोग समूह अलग से नहीं दिया गया है।"
+    }
+  ],
+  "verification": {
+    "status": "unverified",
+    "verified_by": null,
+    "verified_on": null,
+    "checked_pdf_pages": [],
+    "notes": ""
+  }
+}

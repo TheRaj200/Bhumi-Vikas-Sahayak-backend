@@ -1,0 +1,52 @@
+{
+  "rule_id": "R2_5_C_AMENDMENT_2026",
+  "rule_ref": "2(5)(c)",
+  "parent_rule": "2",
+  "title_en": "Rule 2(5)(c) — plots up to 500 sq m (amended 28 Aug 2026, not in the consolidated PDF)",
+  "title_hi": "नियम 2(5)(c) — 500 वर्ग मी. तक के प्लॉट (28 अगस्त 2026 को संशोधित, संकलित PDF में नहीं)",
+  "topic": "amendment",
+  "jurisdiction": "Madhya Pradesh (applies in Bhopal)",
+  "source_document": "MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf",
+  "source_version": "2025-03-06",
+  "related_rules": ["2", "12"],
+  "interpretation_notes": "Version-sensitive warning only. The consolidated PDF (6 Mar 2025) has the old text of 2(5)(c). The 28 Aug 2026 substitution is known only from a secondary source (TeamLease RegTech, 14 Sep 2026). The engine must never give a definitive answer on development permission for plots up to 500 sq m until a human verifies the official gazette text.",
+  "checks": [
+    {
+      "check_key": "small_plot_amendment_warning",
+      "kind": "reference",
+      "title_en": "Development permission for plots up to 500 sq m — amendment of 28 Aug 2026",
+      "title_hi": "500 वर्ग मी. तक के प्लॉट पर विकास अनुज्ञा — 28 अगस्त 2026 का संशोधन",
+      "applies_when": { "field": "plot_area_sqm", "op": "lte", "value": 500 },
+      "required_inputs": ["plot_area_sqm"],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "2-5-c-amendment-2026-08-28",
+          "text_en": "Rule 2(5)(c) was substituted on 28 Aug 2026 (secondary source). For plots up to 500 sq m conforming to the approved Development Plan, separate development permission under Rule 2(5)(a) may not be required. Verify the official text.",
+          "text_hi": "नियम 2(5)(c) 28 अगस्त 2026 को बदला गया (द्वितीयक स्रोत)। विकास योजना के अनुरूप 500 वर्ग मी. तक के प्लॉट पर नियम 2(5)(a) के तहत अलग विकास अनुज्ञा आवश्यक न हो सकती है। आधिकारिक पाठ की पुष्टि करें।",
+          "effect": "manual_review",
+          "reason": "amendment_may_apply"
+        }
+      ],
+      "notes_en": ["The consolidated rulebook supplied is current only to 6 March 2025."],
+      "notes_hi": ["दी गई नियम पुस्तिका केवल 6 मार्च 2025 तक अद्यतन है।"],
+      "source": {
+        "clause": "2(5)(c)",
+        "page": 3,
+        "quote": "(c) The land is already developed in the Central area of the adopted Development Plan, in these areas, the building permission shall be issued by the local bodies as per the landuse and landuse permissibility of the Development Plan and Madhya Pradesh Bhumi Vikas Niyam, 2012."
+      },
+      "explain_en": "The plot is {plot_area_sqm} sq m (up to 500 sq m). Rule 2(5)(c) changed on 28 Aug 2026 after the supplied rulebook; check the amendment before deciding on development permission.",
+      "explain_hi": "प्लॉट {plot_area_sqm} वर्ग मी. (500 वर्ग मी. तक) है। नियम 2(5)(c) दी गई पुस्तिका के बाद 28 अगस्त 2026 को बदला है; विकास अनुज्ञा पर निर्णय से पहले संशोधन देखें।"
+    }
+  ],
+  "verification": {
+    "status": "unverified",
+    "verified_by": null,
+    "verified_on": null,
+    "checked_pdf_pages": [],
+    "notes": ""
+  }
+}

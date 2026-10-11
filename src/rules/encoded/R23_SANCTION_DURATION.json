@@ -1,0 +1,89 @@
+{
+  "rule_id": "R23_SANCTION_DURATION",
+  "rule_ref": "23",
+  "parent_rule": "23",
+  "title_en": "Validity and revalidation of development permission",
+  "title_hi": "विकास अनुज्ञा की वैधता और पुनर्वैधीकरण",
+  "topic": "validity",
+  "jurisdiction": "Madhya Pradesh (applies in Bhopal)",
+  "source_document": "MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf",
+  "source_version": "2025-03-06",
+  "related_rules": ["21"],
+  "interpretation_notes": "Rule 23 covers development permission under Section 30 of the Act. Validity is computed as granted_on + 3 years; revalidation allowed for two consecutive terms of one year each; the overall limit is 5 years. If execution began during validity, the permission does not lapse. Validity of a building permission is not covered by this encoded rule.",
+  "checks": [
+    {
+      "check_key": "development_permission_validity",
+      "kind": "calculation",
+      "title_en": "Development permission — valid until",
+      "title_hi": "विकास अनुज्ञा — वैधता तिथि",
+      "applies_when": { "field": "permission.type", "op": "eq", "value": "development", "if_missing": "false" },
+      "required_inputs": ["permission.granted_on"],
+      "logic": {
+        "type": "formula",
+        "formula_id": "sanction_validity",
+        "params": { "valid_years": 3, "revalidation_terms": 2, "revalidation_term_years": 1, "max_years": 5 }
+      },
+      "compare": null,
+      "unit": "date",
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [
+        "Revalidation applied for after the 3-year expiry attracts a permission fee equal to Rule 21(3)(a); no fee if applied before expiry.",
+        "If execution began during validity, the permission does not lapse and no revalidation is needed (23(3))."
+      ],
+      "notes_hi": [
+        "3 वर्ष की समाप्ति के बाद पुनर्वैधीकरण आवेदन पर नियम 21(3)(a) के बराबर अनुज्ञा शुल्क लगेगा; समाप्ति से पहले आवेदन पर कोई शुल्क नहीं।",
+        "यदि वैधता के दौरान निर्माण शुरू हो गया है, तो अनुज्ञा व्यपगत नहीं होगी और पुनर्वैधीकरण आवश्यक नहीं (23(3))।"
+      ],
+      "source": {
+        "clause": "23(1)",
+        "page": 41,
+        "quote": "(1) In case of development permission under Section 30 of Madhya Pradesh Nagar Tatha Gram Nivesh Adhiniyam, 1973 the sanction once accorded shall remain valid up to three years."
+      },
+      "extra_quotes": [
+        { "clause": "23(2)", "page": 41, "quote": "Such revalidation may be permitted for two consecutive terms of one year each, after which proposals shall have to be submitted afresh." },
+        { "clause": "23(2)", "page": 41, "quote": "The limitation of five years shall not be relaxed." },
+        { "clause": "23(3)", "page": 41, "quote": "In case execution of the project begins during the validity of the permission granted under Section 30 of the Act, the permission shall not be deemed to lapse thereafter at any time and no revalidation shall be required." }
+      ],
+      "explain_en": "Granted on {permission.granted_on}: valid until {calculated}. It can be revalidated twice for one year each, up to 5 years in total.",
+      "explain_hi": "{permission.granted_on} को स्वीकृत: {calculated} तक वैध। इसे एक-एक वर्ष के लिए दो बार पुनर्वैध किया जा सकता है, कुल अधिकतम 5 वर्ष।"
+    },
+    {
+      "check_key": "building_permission_validity_not_encoded",
+      "kind": "reference",
+      "title_en": "Building permission validity — not covered by this rule",
+      "title_hi": "भवन अनुज्ञा की वैधता — इस नियम में शामिल नहीं",
+      "applies_when": { "field": "permission.type", "op": "eq", "value": "building", "if_missing": "false" },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "23-building-permission",
+          "text_en": "Rule 23 speaks of development permission under Section 30. Validity of a building permission needs manual review.",
+          "text_hi": "नियम 23 धारा 30 के तहत विकास अनुज्ञा के बारे में है। भवन अनुज्ञा की वैधता की मैनुअल समीक्षा आवश्यक है।",
+          "effect": "manual_review",
+          "reason": "ambiguous"
+        }
+      ],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": {
+        "clause": "23(1)",
+        "page": 41,
+        "quote": "(1) In case of development permission under Section 30 of Madhya Pradesh Nagar Tatha Gram Nivesh Adhiniyam, 1973 the sanction once accorded shall remain valid up to three years."
+      },
+      "explain_en": "Rule 23 covers development permission only; building permission validity needs manual review.",
+      "explain_hi": "नियम 23 केवल विकास अनुज्ञा पर लागू है; भवन अनुज्ञा की वैधता की मैनुअल समीक्षा आवश्यक है।"
+    }
+  ],
+  "verification": {
+    "status": "unverified",
+    "verified_by": null,
+    "verified_on": null,
+    "checked_pdf_pages": [],
+    "notes": ""
+  }
+}

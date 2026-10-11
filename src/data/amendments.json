@@ -1,0 +1,18 @@
+[
+  {
+    "id": "2026-08-28-rule-2-5-c",
+    "rule": "2(5)(c)",
+    "date": "2026-08-28",
+    "message_en": "Rule 2(5)(c) was amended on 28 Aug 2026, after the supplied rulebook (6 Mar 2025). Per a secondary source, for plots up to 500 sq m where construction conforms to the approved Development Plan land use, the local authority may permit construction/reconstruction without separate development permission under Rule 2(5)(a). Verify the official notification before relying on this.",
+    "message_hi": "नियम 2(5)(c) में 28 अगस्त 2026 को संशोधन हुआ, जो दी गई नियम पुस्तिका (6 मार्च 2025) के बाद है। एक द्वितीयक स्रोत के अनुसार, 500 वर्ग मी. तक के प्लॉट पर, यदि निर्माण स्वीकृत विकास योजना के भूमि उपयोग के अनुरूप है, तो स्थानीय निकाय नियम 2(5)(a) के तहत अलग विकास अनुज्ञा के बिना निर्माण/पुनर्निर्माण की अनुमति दे सकता है। इस पर निर्भर होने से पहले आधिकारिक अधिसूचना देखें।",
+    "source_url": "https://teamleaseregtech.com/updates/article/59469/government-of-madhya-pradesh-amendment-to-land-development-rules",
+    "source_type": "secondary",
+    "verified": false,
+    "triggers": {
+      "plot_area_max_sqm": 500,
+      "rule_refs": ["2(5)", "2(5)(c)", "2(5)(a)"],
+      "keywords_en": ["development permission", "separate permission", "500 sq", "small plot", "rule 2(5)"],
+      "keywords_hi": ["विकास अनुज्ञा", "विकास अनुमति", "500 वर्ग", "अलग अनुमति"]
+    }
+  }
+]

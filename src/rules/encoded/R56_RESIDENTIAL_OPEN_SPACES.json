@@ -1,0 +1,298 @@
+{
+  "rule_id": "R56_RESIDENTIAL_OPEN_SPACES",
+  "rule_ref": "56",
+  "parent_rule": "56",
+  "title_en": "Residential buildings up to 12.5 m — exterior open spaces (front, rear, side)",
+  "title_hi": "आवासीय भवन (12.5 मी. तक) — बाहरी खुली जगह (सामने, पीछे, बगल)",
+  "topic": "setback",
+  "jurisdiction": "Madhya Pradesh (applies in Bhopal)",
+  "source_document": "MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf",
+  "source_version": "2025-03-06",
+  "related_rules": ["42", "65"],
+  "interpretation_notes": "Applies only to residential buildings with height up to 12.5 m (56(5) sends taller buildings to Rule 42). Table rows are read as: 'Up to X' = less than or equal to X; 'More than X / Above X' = strictly greater than X. Side open space: for semi-detached the 'one side' is taken as the larger of the two entered side setbacks. The provisos ('may be reduced') are discretionary; the engine treats them as the minimum the rule permits.",
+  "checks": [
+    {
+      "check_key": "front_open_space",
+      "kind": "check",
+      "title_en": "Front open space",
+      "title_hi": "सामने की खुली जगह",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 12.5 }
+        ]
+      },
+      "required_inputs": ["road_width_m", "proposed.front_setback_m"],
+      "logic": {
+        "type": "range_table",
+        "input": "road_width_m",
+        "gap_policy": "manual_review",
+        "rows": [
+          { "min": null, "min_inclusive": false, "max": 9.0, "max_inclusive": true, "value": 3.0, "label": "Up to 9.0 meters", "quote": "1. Up to 9.0 meters 3.0 meters" },
+          { "min": 9.0, "min_inclusive": false, "max": 12.0, "max_inclusive": true, "value": 3.6, "label": "More than 9.0 meters and up to 12 meters", "quote": "2. More than 9.0 meters and up to 12 meters 3.6 meters" },
+          { "min": 12.0, "min_inclusive": false, "max": 18.0, "max_inclusive": true, "value": 4.5, "label": "More than 12.0 meters and up to 18 meters", "quote": "3. More than 12.0 meters and up to 18 meters 4.5 meters" },
+          { "min": 18.0, "min_inclusive": false, "max": null, "max_inclusive": false, "value": 6.0, "label": "Above 18 meters", "quote": "4. Above 18 meters 6.0 meters" }
+        ]
+      },
+      "compare": { "entered": "proposed.front_setback_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": { "edge": "front" },
+      "exceptions": [
+        {
+          "id": "56-1-b",
+          "text_en": "In existing developed areas with streets narrower than 6.0 m, the building line is 6.0 m from the centre line of the street.",
+          "text_hi": "पहले से विकसित क्षेत्रों में 6.0 मी. से कम चौड़ी सड़क होने पर भवन रेखा सड़क की मध्य रेखा से 6.0 मी. पर होगी।",
+          "when": {
+            "all": [
+              { "field": "road_width_m", "op": "lt", "value": 6.0 },
+              { "field": "in_existing_developed_area", "op": "is_true" }
+            ]
+          },
+          "effect": "manual_review",
+          "reason": "exception_may_apply",
+          "quote": "(b) In existing developed areas with streets less than 6.0 meters in width, the distances of the building (building line) shall be at 6.0 meters from the center line of the street.",
+          "page": 77
+        }
+      ],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": {
+        "clause": "56(1)(a)",
+        "page": 77,
+        "quote": "Every Residential Building having height up to 12.5 meters, facing street shall have a front open space mentioned below and such open space shall form an integral part of the site"
+      },
+      "explain_en": "For a street {road_width_m} m wide, Rule 56(1)(a) requires a minimum front open space of {required} m.",
+      "explain_hi": "{road_width_m} मी. चौड़ी सड़क के लिए नियम 56(1)(a) के अनुसार सामने की न्यूनतम खुली जगह {required} मी. है।"
+    },
+    {
+      "check_key": "rear_open_space",
+      "kind": "check",
+      "title_en": "Rear open space",
+      "title_hi": "पीछे की खुली जगह",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 12.5 }
+        ]
+      },
+      "required_inputs": ["plot_area_sqm", "proposed.rear_setback_m"],
+      "logic": {
+        "type": "range_table",
+        "input": "plot_area_sqm",
+        "gap_policy": "manual_review",
+        "rows": [
+          { "min": null, "min_inclusive": false, "max": 40.0, "max_inclusive": true, "value": 0, "label": "Up to 40.00 sq m — Nil", "quote": "1. Up to 40.00 Nil" },
+          { "min": 40.0, "min_inclusive": false, "max": 150.0, "max_inclusive": true, "value": 1.5, "label": "Above 40.00 and up to 150.00 sq m", "quote": "2. Above 40.00 and up to 150.00 1.50" },
+          { "min": 150.0, "min_inclusive": false, "max": 225.0, "max_inclusive": true, "value": 2.5, "label": "Above 150 and up to 225.00 sq m", "quote": "3. Above 150 and up to 225.00 2.50" },
+          { "min": 225.0, "min_inclusive": false, "max": null, "max_inclusive": false, "value": 3.0, "label": "Above 225.00 sq m", "quote": "4. Above 225.00 3.00" }
+        ]
+      },
+      "compare": { "entered": "proposed.rear_setback_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": { "edge": "rear" },
+      "exceptions": [],
+      "notes_en": ["The rear open space must run along the entire face of the rear wall (56(2)(b))."],
+      "notes_hi": ["पीछे की खुली जगह पीछे की पूरी दीवार के साथ होनी चाहिए (56(2)(b))।"],
+      "source": {
+        "clause": "56(2)(a)",
+        "page": 78,
+        "quote": "Every Residential Building, having height up to 12.5 meters, shall have a Rear Open Space, as below:-"
+      },
+      "explain_en": "For a plot of {plot_area_sqm} sq m, Rule 56(2)(a) requires a minimum rear open space of {required} m.",
+      "explain_hi": "{plot_area_sqm} वर्ग मी. के प्लॉट के लिए नियम 56(2)(a) के अनुसार पीछे की न्यूनतम खुली जगह {required} मी. है।"
+    },
+    {
+      "check_key": "side_detached",
+      "kind": "check",
+      "title_en": "Side open space — detached building (both sides)",
+      "title_hi": "बगल की खुली जगह — स्वतंत्र (डिटैच्ड) भवन (दोनों ओर)",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 12.5 },
+          { "field": "building_form", "op": "eq", "value": "detached" },
+          {
+            "not": {
+              "all": [
+                { "field": "proposed.building_height_m", "op": "lte", "value": 7 },
+                { "field": "derived.frontage_m", "op": "lt", "value": 12 }
+              ]
+            }
+          }
+        ]
+      },
+      "required_inputs": ["proposed.side_setback_left_m", "proposed.side_setback_right_m"],
+      "logic": { "type": "constant", "value": 3.0 },
+      "compare": { "entered": "derived.side_setback_min_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": { "edge": "sides" },
+      "exceptions": [],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": {
+        "clause": "56(3)(i)",
+        "page": 78,
+        "quote": "For detached buildings there shall be minimum side open spaces of 3 meters on both the sides"
+      },
+      "explain_en": "A detached building needs at least {required} m open space on both sides (Rule 56(3)(i)).",
+      "explain_hi": "स्वतंत्र भवन के दोनों ओर कम से कम {required} मी. खुली जगह आवश्यक है (नियम 56(3)(i))।"
+    },
+    {
+      "check_key": "side_detached_proviso_wider",
+      "kind": "check",
+      "title_en": "Side open space — detached, up to 7 m height, frontage under 12 m (wider side)",
+      "title_hi": "बगल की खुली जगह — स्वतंत्र भवन, 7 मी. तक ऊँचाई, 12 मी. से कम फ्रंटेज (चौड़ी ओर)",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "building_form", "op": "eq", "value": "detached" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 7 },
+          { "field": "derived.frontage_m", "op": "lt", "value": 12 }
+        ]
+      },
+      "required_inputs": ["proposed.side_setback_left_m", "proposed.side_setback_right_m"],
+      "logic": { "type": "constant", "value": 3.0 },
+      "compare": { "entered": "derived.side_setback_max_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": { "edge": "sides" },
+      "exceptions": [],
+      "notes_en": ["The proviso says one side 'may be reduced' — this is discretionary."],
+      "notes_hi": ["प्रावधान में एक ओर की जगह 'कम की जा सकती है' — यह विवेकाधीन है।"],
+      "source": {
+        "clause": "56(3)(i) proviso",
+        "page": 78,
+        "quote": "Provided that for detached residential building up to 7 meters in height on plots with a frontage less than 12 meters, one of the sides open space may be reduced to 1.5 meters."
+      },
+      "explain_en": "Under the proviso only one side may be reduced; the other side still needs {required} m.",
+      "explain_hi": "प्रावधान के अनुसार केवल एक ओर की जगह कम की जा सकती है; दूसरी ओर {required} मी. आवश्यक है।"
+    },
+    {
+      "check_key": "side_detached_proviso_narrower",
+      "kind": "check",
+      "title_en": "Side open space — detached, up to 7 m height, frontage under 12 m (reduced side)",
+      "title_hi": "बगल की खुली जगह — स्वतंत्र भवन, 7 मी. तक ऊँचाई, 12 मी. से कम फ्रंटेज (कम की गई ओर)",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "building_form", "op": "eq", "value": "detached" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 7 },
+          { "field": "derived.frontage_m", "op": "lt", "value": 12 }
+        ]
+      },
+      "required_inputs": ["proposed.side_setback_left_m", "proposed.side_setback_right_m"],
+      "logic": { "type": "constant", "value": 1.5 },
+      "compare": { "entered": "derived.side_setback_min_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": { "edge": "sides" },
+      "exceptions": [],
+      "notes_en": ["The proviso says one side 'may be reduced' — this is discretionary."],
+      "notes_hi": ["प्रावधान में एक ओर की जगह 'कम की जा सकती है' — यह विवेकाधीन है।"],
+      "source": {
+        "clause": "56(3)(i) proviso",
+        "page": 78,
+        "quote": "Provided that for detached residential building up to 7 meters in height on plots with a frontage less than 12 meters, one of the sides open space may be reduced to 1.5 meters."
+      },
+      "explain_en": "Under the proviso the reduced side must still be at least {required} m.",
+      "explain_hi": "प्रावधान के अनुसार कम की गई ओर भी कम से कम {required} मी. होनी चाहिए।"
+    },
+    {
+      "check_key": "side_semi_detached",
+      "kind": "check",
+      "title_en": "Side open space — semi-detached building (one side)",
+      "title_hi": "बगल की खुली जगह — अर्ध-स्वतंत्र (सेमी-डिटैच्ड) भवन (एक ओर)",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 12.5 },
+          { "field": "building_form", "op": "eq", "value": "semi_detached" },
+          {
+            "not": {
+              "all": [
+                { "field": "proposed.building_height_m", "op": "lte", "value": 10 },
+                { "field": "derived.frontage_m", "op": "lte", "value": 10 }
+              ]
+            }
+          }
+        ]
+      },
+      "required_inputs": ["proposed.side_setback_left_m", "proposed.side_setback_right_m"],
+      "logic": { "type": "constant", "value": 3.0 },
+      "compare": { "entered": "derived.side_setback_max_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": { "edge": "sides" },
+      "exceptions": [],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": {
+        "clause": "56(3)(ii)",
+        "page": 78,
+        "quote": "For semi-detached building there shall be a minimum side open space of 3.0 meters on one side."
+      },
+      "explain_en": "A semi-detached building needs at least {required} m open space on one side (Rule 56(3)(ii)).",
+      "explain_hi": "अर्ध-स्वतंत्र भवन के एक ओर कम से कम {required} मी. खुली जगह आवश्यक है (नियम 56(3)(ii))।"
+    },
+    {
+      "check_key": "side_semi_detached_proviso",
+      "kind": "check",
+      "title_en": "Side open space — semi-detached, up to 10 m height, frontage up to 10 m",
+      "title_hi": "बगल की खुली जगह — अर्ध-स्वतंत्र, 10 मी. तक ऊँचाई, 10 मी. तक फ्रंटेज",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "building_form", "op": "eq", "value": "semi_detached" },
+          { "field": "proposed.building_height_m", "op": "lte", "value": 10 },
+          { "field": "derived.frontage_m", "op": "lte", "value": 10 }
+        ]
+      },
+      "required_inputs": ["proposed.side_setback_left_m", "proposed.side_setback_right_m"],
+      "logic": { "type": "constant", "value": 2.5 },
+      "compare": { "entered": "derived.side_setback_max_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": { "edge": "sides" },
+      "exceptions": [],
+      "notes_en": ["The proviso says the side open space 'may be reduced' — this is discretionary."],
+      "notes_hi": ["प्रावधान में 'कम की जा सकती है' लिखा है — यह विवेकाधीन है।"],
+      "source": {
+        "clause": "56(3)(ii) proviso",
+        "page": 78,
+        "quote": "For Semi-detached building up to 10 meters in height on plots with a frontage up to 10 meters, the side open space may be reduced to 2.5 meters."
+      },
+      "explain_en": "For this semi-detached case the side open space may be reduced to {required} m.",
+      "explain_hi": "इस अर्ध-स्वतंत्र भवन के लिए बगल की खुली जगह {required} मी. तक कम की जा सकती है।"
+    },
+    {
+      "check_key": "side_row_type",
+      "kind": "reference",
+      "title_en": "Side open space — row-type building",
+      "title_hi": "बगल की खुली जगह — रो-टाइप भवन",
+      "applies_when": {
+        "all": [
+          { "field": "building_type", "op": "eq", "value": "residential" },
+          { "field": "building_form", "op": "eq", "value": "row" }
+        ]
+      },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": {
+        "clause": "56(3)(iii)",
+        "page": 78,
+        "quote": "For row-type buildings, no side open space is required."
+      },
+      "explain_en": "Rule 56(3)(iii): no side open space is required for row-type buildings.",
+      "explain_hi": "नियम 56(3)(iii): रो-टाइप भवनों के लिए बगल की खुली जगह आवश्यक नहीं है।"
+    }
+  ],
+  "verification": {
+    "status": "unverified",
+    "verified_by": null,
+    "verified_on": null,
+    "checked_pdf_pages": [],
+    "notes": ""
+  }
+}

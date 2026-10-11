@@ -1,0 +1,24 @@
+{
+  "_instructions": "FILLED BY A HUMAN from the official English PDF. For each question set expected_status (answered | not_found | manual_review | needs_information) and expected_rules (printed rule numbers, e.g. [\"56\"]). Also note the PDF page you checked. AI agents must not fill this file from their own guesses.",
+  "checked_by": null,
+  "checked_on": null,
+  "items": [
+    { "id": 1, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 2, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 3, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 4, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 5, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 6, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 7, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 8, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 9, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 10, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 11, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "Tip from organisers: changed in August 2026 — expect an amendment warning." },
+    { "id": 12, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 13, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 14, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 15, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "" },
+    { "id": 16, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "Organisers: outside the rules." },
+    { "id": 17, "expected_status": null, "expected_rules": [], "pdf_pages_checked": [], "notes": "Organisers: outside the rules." }
+  ]
+}

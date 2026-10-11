@@ -1,0 +1,197 @@
+{
+  "rule_id": "R21_FEES",
+  "rule_ref": "21",
+  "parent_rule": "21",
+  "title_en": "Application fee and permission fee",
+  "title_hi": "आवेदन शुल्क और अनुज्ञा शुल्क",
+  "topic": "fee",
+  "jurisdiction": "Madhya Pradesh (applies in Bhopal)",
+  "source_document": "MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf",
+  "source_version": "2025-03-06",
+  "related_rules": ["14", "23", "2"],
+  "interpretation_notes": "Fees are calculations, not pass/fail checks. Building permission fee (21(3)(b)) uses the slab for the proposed built-up area; slab edges are printed as whole numbers (0–75, 76–125, ...), so a value between two slabs (e.g. 75.5) goes to manual review. Multipliers by use: shops/commercial/industrial +50% (item 2), shop-cum-residence +50% (item 4), administrative block / social / educational / other = item 1. High-rise (Rule 2(38)) uses 21(3)(c): Rs 10 per sq m of built-up area; commercial +100%; shop-cum-residence +50%. Farm house and agricultural tourist facility are not listed → manual review. Development permission fee (21(3)(a)) is per hectare by land-use zone and planning-area population; whether a part hectare is charged pro-rata is not stated → note. Bhopal's planning-area population must be entered by the user (not assumed).",
+  "checks": [
+    {
+      "check_key": "application_fee_building",
+      "kind": "calculation",
+      "title_en": "Application fee — building permission",
+      "title_hi": "आवेदन शुल्क — भवन अनुज्ञा",
+      "applies_when": { "field": "application_type", "op": "eq", "value": "building_permission", "if_missing": "false" },
+      "required_inputs": ["proposed.total_built_up_area_sqm"],
+      "logic": {
+        "type": "formula",
+        "formula_id": "rate_times_input",
+        "params": { "input": "proposed.total_built_up_area_sqm", "rate": 1.00, "round_to": 2 }
+      },
+      "compare": null,
+      "unit": "INR",
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": ["Application fee is not refundable (21(2)(iii))."],
+      "notes_hi": ["आवेदन शुल्क वापस नहीं होता (21(2)(iii))।"],
+      "source": { "clause": "21(2)(ii)", "page": 35, "quote": "(ii) for the Building Permission Rs 1.00 per Square meter of the proposed built- up area." },
+      "explain_en": "Application fee = Rs 1.00 × {proposed.total_built_up_area_sqm} sq m = Rs {calculated} (Rule 21(2)(ii)).",
+      "explain_hi": "आवेदन शुल्क = ₹1.00 × {proposed.total_built_up_area_sqm} वर्ग मी. = ₹{calculated} (नियम 21(2)(ii))।"
+    },
+    {
+      "check_key": "application_fee_development",
+      "kind": "calculation",
+      "title_en": "Application fee — development permission",
+      "title_hi": "आवेदन शुल्क — विकास अनुज्ञा",
+      "applies_when": { "field": "application_type", "op": "eq", "value": "development_permission", "if_missing": "false" },
+      "required_inputs": ["plot_area_sqm"],
+      "logic": {
+        "type": "formula",
+        "formula_id": "rate_per_unit_or_part",
+        "params": { "input": "derived.plot_area_hectare", "rate": 5000 }
+      },
+      "compare": null,
+      "unit": "INR",
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": ["Application fee is not refundable (21(2)(iii))."],
+      "notes_hi": ["आवेदन शुल्क वापस नहीं होता (21(2)(iii))।"],
+      "source": { "clause": "21(2)(i)", "page": 35, "quote": "(i) for the Development Permission Rs. 5000 per hectare or part thereof," },
+      "explain_en": "Application fee = Rs 5,000 per hectare or part thereof → Rs {calculated} (Rule 21(2)(i)).",
+      "explain_hi": "आवेदन शुल्क = ₹5,000 प्रति हेक्टेयर या उसका भाग → ₹{calculated} (नियम 21(2)(i))।"
+    },
+    {
+      "check_key": "permission_fee_building",
+      "kind": "calculation",
+      "title_en": "Permission fee — building permission",
+      "title_hi": "अनुज्ञा शुल्क — भवन अनुज्ञा",
+      "applies_when": { "field": "application_type", "op": "eq", "value": "building_permission", "if_missing": "false" },
+      "required_inputs": ["building_type", "proposed.total_built_up_area_sqm", "proposed.building_height_m", "proposed.floors"],
+      "logic": {
+        "type": "formula",
+        "formula_id": "building_permission_fee",
+        "params": {
+          "area_input": "proposed.total_built_up_area_sqm",
+          "slabs": [
+            { "min": 0, "max": 75, "fee": 750, "quote": "1. A building intended to be used 0 75 750" },
+            { "min": 76, "max": 125, "fee": 1250, "quote": "exclusively as residence 76 125 1,250" },
+            { "min": 126, "max": 200, "fee": 2000, "quote": "126 200 2,000" },
+            { "min": 201, "max": 300, "fee": 3000, "quote": "201 300 3,000" },
+            { "min": 301, "max": 400, "fee": 4000, "quote": "301 400 4,000" },
+            { "min": 401, "max": 600, "fee": 6000, "quote": "401 600 6,000" },
+            { "min": 601, "max": 750, "fee": 7500, "quote": "601 750 7,500" },
+            { "min": 751, "max": 1000, "fee": 10000, "quote": "751 1,000 10,000" },
+            { "min": 1001, "max": 1250, "fee": 12500, "quote": "1,001 1,250 12,500" },
+            { "min": 1251, "max": 1500, "fee": 15000, "quote": "1,251 1,500 15,000" },
+            { "min": 1501, "max": 2000, "fee": 20000, "quote": "1,501 2,000 20,000" },
+            { "min": 2001, "max": 2500, "fee": 25000, "quote": "2,001 2,500 25,000" },
+            { "min": 2500, "min_exclusive": true, "max": null, "fee": 50000, "quote": "above 2500 50,000" }
+          ],
+          "slab_page": 36,
+          "multipliers": {
+            "residential": { "factor": 1.0, "item": "1" },
+            "commercial": { "factor": 1.5, "item": "2" },
+            "industrial": { "factor": 1.5, "item": "2" },
+            "shop_cum_residence": { "factor": 1.5, "item": "4" },
+            "public_semi_public": { "factor": 1.0, "item": "6" }
+          },
+          "high_rise": {
+            "rate_per_sqm": 10.0,
+            "page": 37,
+            "quote": "1. A building intended to be used Rs. 10.00 per square meter of the",
+            "multipliers": {
+              "residential": { "factor": 1.0, "item": "1" },
+              "commercial": { "factor": 2.0, "item": "2" },
+              "industrial": { "factor": 2.0, "item": "2" },
+              "shop_cum_residence": { "factor": 1.5, "item": "4" },
+              "public_semi_public": { "factor": 1.0, "item": "5" }
+            }
+          },
+          "unlisted_building_type": "manual_review"
+        }
+      },
+      "compare": null,
+      "unit": "INR",
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [
+        "Cinema theatres, additions/alterations and revalidation have separate fees (items 5, 7, 8, 9) — not calculated here.",
+        "The authority may reject the application if the permission fee is not deposited within 15 days of intimation (21(3)(d))."
+      ],
+      "notes_hi": [
+        "सिनेमा, परिवर्धन/परिवर्तन और पुनर्वैधीकरण के अलग शुल्क हैं (मद 5, 7, 8, 9) — यहाँ नहीं गिने गए।",
+        "सूचना के 15 दिन में अनुज्ञा शुल्क जमा न करने पर प्राधिकारी आवेदन अस्वीकार कर सकता है (21(3)(d))।"
+      ],
+      "source": { "clause": "21(3)(b)", "page": 36, "quote": "(b) In case of a building permission (other than high rise buildings)" },
+      "extra_quotes": [
+        { "clause": "21(3)(c)", "page": 37, "quote": "(c) In case of building permission of high rise buildings :-" },
+        { "clause": "21(3)(b) item 2", "page": 36, "quote": "2. A building intended to be used as shops, Fees as prescribed in item No. 1" }
+      ],
+      "explain_en": "Building permission fee for {proposed.total_built_up_area_sqm} sq m ({building_type}) = Rs {calculated} (Rule 21(3)).",
+      "explain_hi": "{proposed.total_built_up_area_sqm} वर्ग मी. ({building_type}) के लिए भवन अनुज्ञा शुल्क = ₹{calculated} (नियम 21(3))।"
+    },
+    {
+      "check_key": "permission_fee_development",
+      "kind": "calculation",
+      "title_en": "Permission fee — development permission",
+      "title_hi": "अनुज्ञा शुल्क — विकास अनुज्ञा",
+      "applies_when": { "field": "application_type", "op": "eq", "value": "development_permission", "if_missing": "false" },
+      "required_inputs": ["plot_area_sqm", "land_use_zone", "planning_area_population"],
+      "logic": {
+        "type": "formula",
+        "formula_id": "development_permission_fee",
+        "params": {
+          "area_input": "derived.plot_area_hectare",
+          "zone_groups": {
+            "residential_public_industrial_transport": ["residential", "public_semi_public", "industrial", "transportation"],
+            "commercial": ["commercial"],
+            "recreational_agricultural_other": ["recreational", "agricultural"]
+          },
+          "rates_per_hectare": {
+            "residential_public_industrial_transport": { "more_than_10_lakh": 75000, "5_to_10_lakh": 50000, "less_than_5_lakh": 25000, "quote": "Permission Residential or Public and, 75,000 50,000 25,000" },
+            "commercial": { "more_than_10_lakh": 150000, "5_to_10_lakh": 125000, "less_than_5_lakh": 100000, "quote": "Commercial 1,50,000 1,25,000 1,00,000" },
+            "recreational_agricultural_other": { "more_than_10_lakh": 30000, "5_to_10_lakh": 20000, "less_than_5_lakh": 10000, "quote": "Recreational or agriculture 30,000 20,000 10,000" }
+          },
+          "page": 35
+        }
+      },
+      "compare": null,
+      "unit": "INR",
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "21-3-a-part-hectare",
+          "text_en": "The table gives a rate per hectare; it does not say how a part hectare is charged. Confirm with the authority.",
+          "text_hi": "तालिका में दर प्रति हेक्टेयर है; हेक्टेयर के भाग पर शुल्क कैसे लगेगा यह नहीं लिखा। प्राधिकारी से पुष्टि करें।",
+          "effect": "note",
+          "reason": "ambiguous"
+        }
+      ],
+      "notes_en": ["Applies to applications under section 29(1) of the Act, excluding section 29(3) (21(3)(a))."],
+      "notes_hi": ["अधिनियम की धारा 29(1) के आवेदनों पर लागू, धारा 29(3) को छोड़कर (21(3)(a))।"],
+      "source": { "clause": "21(3)(a)", "page": 35, "quote": "the permission fee for development of any land shall be as under :" },
+      "explain_en": "Development permission fee = rate per hectare for this zone and population × {derived.plot_area_hectare} ha = Rs {calculated} (Rule 21(3)(a)).",
+      "explain_hi": "विकास अनुज्ञा शुल्क = इस ज़ोन और जनसंख्या की प्रति हेक्टेयर दर × {derived.plot_area_hectare} हेक्टेयर = ₹{calculated} (नियम 21(3)(a))।"
+    },
+    {
+      "check_key": "revalidation_fee_reference",
+      "kind": "reference",
+      "title_en": "Revalidation of building permission — fee",
+      "title_hi": "भवन अनुज्ञा का पुनर्वैधीकरण — शुल्क",
+      "applies_when": { "field": "application_type", "op": "eq", "value": "building_permission", "if_missing": "false" },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": { "clause": "21(3)(b) item 9", "page": 37, "quote": "9. Revalidation of the building permission 10% of the amount of permission" },
+      "explain_en": "Revalidation of a building permission costs 10% of the permission fee originally charged (Rule 21(3)(b), item 9).",
+      "explain_hi": "भवन अनुज्ञा के पुनर्वैधीकरण का शुल्क मूल अनुज्ञा शुल्क का 10% है (नियम 21(3)(b), मद 9)।"
+    }
+  ],
+  "verification": {
+    "status": "unverified",
+    "verified_by": null,
+    "verified_on": null,
+    "checked_pdf_pages": [],
+    "notes": ""
+  }
+}

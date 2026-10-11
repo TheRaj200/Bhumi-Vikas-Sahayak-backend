@@ -1,0 +1,20 @@
+[
+  { "check_key": "development_permission_validity", "name": "Granted 2023-05-10 → valid until 2026-05-10 (sample Q3)", "kind": "normal",
+    "inputs": { "permission": { "type": "development", "granted_on": "2023-05-10", "as_of": "2026-10-11" } },
+    "expected": { "status": "calculated", "calculated_value": "2026-05-10" } },
+  { "check_key": "development_permission_validity", "name": "Granted on 29 Feb 2024 → 28 Feb 2027", "kind": "boundary",
+    "inputs": { "permission": { "type": "development", "granted_on": "2024-02-29", "as_of": "2026-10-11" } },
+    "expected": { "status": "calculated", "calculated_value": "2027-02-28" } },
+  { "check_key": "development_permission_validity", "name": "Execution started — still shows the validity date", "kind": "normal",
+    "inputs": { "permission": { "type": "development", "granted_on": "2020-01-15", "execution_started": true, "as_of": "2026-10-11" } },
+    "expected": { "status": "calculated", "calculated_value": "2023-01-15" } },
+  { "check_key": "development_permission_validity", "name": "Grant date missing", "kind": "missing_input",
+    "inputs": { "permission": { "type": "development" } },
+    "expected": { "status": "needs_information", "calculated_value": null } },
+  { "check_key": "development_permission_validity", "name": "Permission section not filled — not applicable", "kind": "normal",
+    "inputs": {},
+    "expected": { "status": "not_applicable" } },
+  { "check_key": "building_permission_validity_not_encoded", "name": "Building permission validity needs manual review", "kind": "exception",
+    "inputs": { "permission": { "type": "building", "granted_on": "2024-01-01" } },
+    "expected": { "status": "manual_review" } }
+]

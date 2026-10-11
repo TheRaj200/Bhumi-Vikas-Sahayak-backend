@@ -1,0 +1,81 @@
+{
+  "rule_id": "R83_LIFTS",
+  "rule_ref": "83",
+  "parent_rule": "83",
+  "title_en": "Lifts for buildings above 12.5 m",
+  "title_hi": "12.5 मी. से ऊँचे भवनों में लिफ्ट",
+  "topic": "lift",
+  "jurisdiction": "Madhya Pradesh (applies in Bhopal)",
+  "source_document": "MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf",
+  "source_version": "2025-03-06",
+  "related_rules": ["42", "102"],
+  "interpretation_notes": "'More than 12.5 meters' is read as strictly greater than 12.5 m. Design details follow NBC Part VIII Section 5, which is outside the supplied sources.",
+  "checks": [
+    {
+      "check_key": "lift_required",
+      "kind": "check",
+      "title_en": "Lift provided",
+      "title_hi": "लिफ्ट का प्रावधान",
+      "applies_when": { "field": "proposed.building_height_m", "op": "gt", "value": 12.5 },
+      "required_inputs": ["proposed.has_lift"],
+      "logic": { "type": "boolean_required", "input": "proposed.has_lift", "required": true },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": { "clause": "83", "page": 95, "quote": "Provision for lifts shall be made for building more than 12.5 meters in height." },
+      "explain_en": "Buildings taller than 12.5 m must provide lifts (Rule 83).",
+      "explain_hi": "12.5 मी. से ऊँचे भवनों में लिफ्ट का प्रावधान आवश्यक है (नियम 83)।"
+    },
+    {
+      "check_key": "nbc_standard",
+      "kind": "reference",
+      "title_en": "Lift design standard (NBC Part VIII, Section 5)",
+      "title_hi": "लिफ्ट डिज़ाइन मानक (NBC भाग VIII, खंड 5)",
+      "applies_when": { "field": "proposed.building_height_m", "op": "gt", "value": 12.5 },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": ["NBC is not part of the supplied sources."],
+      "notes_hi": ["NBC दिए गए स्रोतों में शामिल नहीं है।"],
+      "source": { "clause": "83", "page": 95, "quote": "Planning, design, installation, operation, maintenance and inspection of Lift, Escalator or Moving Walk to be installed in a building shall be in accordance with the provisions given in Section 5 of Part-VIII: of National Building Code (NBC)." },
+      "explain_en": "Lift planning, design, installation and maintenance must follow NBC Part VIII Section 5 (Rule 83).",
+      "explain_hi": "लिफ्ट की योजना, डिज़ाइन, स्थापना और रखरखाव NBC भाग VIII खंड 5 के अनुसार होना चाहिए (नियम 83)।"
+    },
+    {
+      "check_key": "application_details",
+      "kind": "reference",
+      "title_en": "Lift details with the building permission application",
+      "title_hi": "भवन अनुज्ञा आवेदन के साथ लिफ्ट का विवरण",
+      "applies_when": {
+        "any": [
+          { "field": "proposed.building_height_m", "op": "gt", "value": 12.5 },
+          { "field": "proposed.has_lift", "op": "is_true", "if_missing": "false" }
+        ]
+      },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": { "clause": "83(1)", "page": 95, "quote": "Every owner shall furnish details related to installation of lift, escalator or moving walk along with building permission application in Appendix A- 2(A) to the concerned authority." },
+      "explain_en": "Lift installation details go with the building permission application in Appendix A-2(A) (Rule 83(1)).",
+      "explain_hi": "लिफ्ट स्थापना का विवरण भवन अनुज्ञा आवेदन के साथ परिशिष्ट A-2(A) में देना होगा (नियम 83(1))।"
+    }
+  ],
+  "verification": {
+    "status": "unverified",
+    "verified_by": null,
+    "verified_on": null,
+    "checked_pdf_pages": [],
+    "notes": ""
+  }
+}

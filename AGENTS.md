@@ -1,125 +1,135 @@
 # backend/AGENTS.md — rules for the AI working on the backend
 
-First read the root `AGENTS.md`, then `docs/API_CONTRACT.md`, `docs/DOMAIN_RULES.md`, `docs/DECISIONS.md` and `backend/MEMORY.md`.
+First read the root `AGENTS.md`, then `backend/MEMORY.md`, then the docs the task needs:
+`docs/API_CONTRACT.md` (always for API work), `docs/RULE_COMPILER.md` (engine / encoded rules), `docs/DOMAIN_RULES.md`, `docs/DATA_MODEL.md`, `docs/DECISIONS.md`.
 
 **You may edit only `backend/**`.** Never touch `frontend/`, `docs/` (unless the user asks) or the source data folder.
 
-## Stack
+## Stack (decided — do not change)
 
-- Node 24, TypeScript, Express, `zod` for validation, `tsx` to run TS in dev.
-- `package.json` must have `"type": "module"`.
-- LLM SDKs: `@anthropic-ai/sdk` for Anthropic; Cerebras is OpenAI-compatible (use `openai` SDK with `baseURL: "https://api.cerebras.ai/v1"`) or plain `fetch`.
-- `dotenv` for env vars, `cors` for local dev.
-- Do **not** add: databases, ORMs, vector DBs, LangChain/LlamaIndex, auth, Docker — unless the user asks.
+- Node 24, **JavaScript ES modules** (`import`/`export`, `"type": "module"`). **No TypeScript.**
+- Express 5 (async errors reach the error handler automatically — just `throw`).
+- zod 4 for validation (`src/validation/schemas.js`), Mongoose 9 for MongoDB Atlas, `@anthropic-ai/sdk` for Claude, Vitest for tests.
+- Env vars via Node's `--env-file-if-exists=.env` (no dotenv).
+- Do **not** add: TypeScript, ORMs other than Mongoose, vector DBs, LangChain/LlamaIndex, auth, Docker, other LLM providers — unless the user asks.
 
-## Scripts (must exist and work)
+## Scripts
 
 | Script | Does |
 |---|---|
-| `npm run dev` | `tsx watch src/server.ts` on port 8000 |
-| `npm run start` | run without watch |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run eval` | run the 17 sample questions, write `eval/results/latest.json` |
+| `npm run dev` | API with auto-restart on http://localhost:8000 |
+| `npm start` | API without watch |
+| `npm run seed` | Seed MongoDB (rules, encoded rules, rule tests, sample cases) — idempotent |
+| `npm test` | Vitest: data/quote checks, API smoke tests, engine seed tests (when `ENGINE_READY`) |
+| `npm run eval` | 17-question benchmark against the running server → `eval/results/latest.json` |
 
-**Before saying a task is done, run `npm run typecheck`** and, for answer/search changes, `npm run eval`.
+**Before saying a task is done, run `npm test`. It must be green.** Never delete, skip or weaken a test to make it pass — fix the code, or ask the user if the test itself is wrong.
 
-## Folder structure
+## Folder structure (keep it)
 
 ```
 backend/
   src/
-    server.ts              app setup, routes, static /pdf, error handler
-    config.ts              env vars + data paths (one place only)
-    types/api.ts           TS types = docs/API_CONTRACT.md (keep identical)
-    routes/
-      health.ts  ask.ts  calculate.ts  rules.ts  eval.ts
-    services/
-      rulesStore.ts        load .jsonl once, clean headers, lookup by rule, alias map (17-a → 17)
-      search.ts            keyword/BM25 search → top-k rules
-      llm.ts               ONE wrapper for Anthropic/Cerebras (timeout, temp 0, JSON output)
-      answer.ts            ask pipeline: detect lang → search → LLM → verify → build response
-      verifyQuote.ts       check quote is a verbatim substring of the rule text
-      calculator.ts        pure functions, read verified tables only
-      amendments.ts        decide which amendment warnings apply
-      strings.ts           fixed not_found + disclaimer strings (en/hi) from the contract
+    server.js              start: connect DB → load rules → load encoded rules → listen
+    app.js                 express app: routes, /pdf static, 404, error handler
+    config.js              ALL env vars and data paths (only place that reads process.env)
+    constants/
+      fields.js            every CaseInputs path + derived values, labels, clarification questions, enums
+      statuses.js          status model + labels
+      strings.js           fixed strings (not_found, disclaimer, …) + report limitations
     data/
-      tables/*.json        human-verified tables (setbacks, FAR, fees…)
-      amendments.json      human-written amendment notes
-  eval/
-    questions.json         17 questions from sample_questions.md
-    answer_key.json        expected status + rule numbers (filled by a HUMAN)
-    run.ts                 eval runner
-    results/latest.json    output, served by GET /api/eval/latest
-  .env.example
+      amendments.json      28 Aug 2026 amendment (secondary source, unverified) + triggers
+      glossary.json        Hindi/Hinglish → English search terms
+      sample_applications.json  4 sample cases (seeded)
+    db/connect.js          Mongo connection, dbStatus(), never throws
+    models/index.js        all Mongoose models (docs/DATA_MODEL.md)
+    validation/schemas.js  zod request schemas for every endpoint (= contract)
+    middleware/index.js    requestLogger, requireDb, notFoundHandler, errorHandler
+    rules/
+      encoded/*.json       11 encoded rules (candidates, UNVERIFIED) — docs/RULE_COMPILER.md
+      tests/*.tests.json   seed test cases per rule
+      schema.js            zod schema for encoded rules + tests
+    engine/                compliance engine — README.md is the implementation guide
+    services/
+      rulesStore.js        rules in memory, aliases (17-a → 17), quoteInRule, findQuotePage, pdfUrl
+      encodedRulesStore.js encoded rules from Mongo (or files), toSummary, isEnabledForChecks
+      versionInfo.js       VersionInfo + amendment warnings
+      llm.js               ONLY file that calls Claude (completeJson)
+      search.js            TODO: BM25 search
+      answer.js            TODO: question pipeline
+    routes/                one file per area; stubs throw 501 NOT_IMPLEMENTED after validating input
+    utils/                 textClean.js (headers, normalise, pages), httpError.js
+  scripts/seed.js
+  eval/                    questions.json, answer_key.json (HUMAN fills), run.js, results/
+  tests/                   *.test.js
 ```
 
-Keep this structure. If you need a new file, put it in the matching folder.
+New files go in the matching folder. One responsibility per file.
 
-## Data paths
+## What is already done (do not rewrite — extend)
 
-- Read data from `../bhopal-impact-lab-2026-problem-statements-main/track-1-bhumi-vikas-sahayak/` resolved in `config.ts` with `path.resolve` relative to the backend folder (use `fileURLToPath(import.meta.url)`), not hard-coded `C:\...`.
-- **Never write to or modify the source data folder.**
-- Serve the PDFs: `/pdf/en.pdf` → `..._EN.pdf`, `/pdf/hi.pdf` → `..._HI.pdf`.
+- Config, DB connection, all models, validation schemas, middleware, error format.
+- Routes implemented: `GET /api/health`, `/api/meta`, `/api/rules`, `/api/rules/:rule`, `/api/encoded-rules`, `/api/encoded-rules/:rule_id`, `/api/eval/latest`, `/pdf/en.pdf`, `/pdf/hi.pdf`.
+- All other routes exist as **validated stubs** returning `501 NOT_IMPLEMENTED` — replace the `throw notImplemented(...)` line with the real logic. Keep the validation lines.
+- 11 encoded rules + ~150 seed tests; every quote/page auto-checked. Seed script. Eval runner.
 
-## The ask pipeline (must work like this)
+## Build order (follow `docs/FEATURE_MAP.md`)
 
-1. Validate input with zod (1–1000 chars).
-2. Detect language: any Devanagari char (`/[\u0900-\u097F]/`) → `hi`, else `en` (unless `lang` given).
-3. If Hindi: make an English search query (glossary from `docs/DOMAIN_RULES.md` and/or a small LLM translate call).
-4. Search top 6 rules (BM25 or keyword + title boost). Send only these rule texts to the LLM, each labelled with its rule number.
-5. LLM prompt rules:
-   - Use ONLY the given rule texts. If they do not answer → return `not_found`.
-   - Return strict JSON: `{ "status": "answered"|"not_found", "answer": "...", "citations": [{ "rule": "56", "quote": "exact text" }] }`
-   - Quotes must be copied word for word from the given text, short (one sentence or table row).
-   - Answer in the question's language, max ~80 words, say "Rule X says…".
-   - No legal advice language. No outside knowledge.
-   - Temperature 0.
-6. Parse JSON safely (if invalid → retry once → else `503 LLM_UNAVAILABLE`).
-7. **Verify every quote** (`verifyQuote.ts`): normalise whitespace + strip page headers on both sides, then substring check. Drop failed quotes. Drop citations whose rule was not in the retrieved set.
-8. No verified citation left → `not_found` with the fixed string.
-9. Fill `title`, `part`, pages, `pdf_url` from `rulesStore` — **never from the LLM**.
-10. Add `version` (with amendment warnings from `amendments.ts`) and `disclaimer`.
+1. **Engine** (`src/engine/`, guide in `src/engine/README.md`) → set `ENGINE_READY = true` → all seed tests green.
+2. `POST /api/compliance/check` (+ save to `compliance_checks`).
+3. `GET /api/rules/search` (`services/search.js`).
+4. `POST /api/questions` (`services/answer.js`).
+5. Applications CRUD + review events + report.
+6. Rule tests endpoints + verification endpoint.
+7. Metrics endpoints.
 
-## Calculator rules
+## Question pipeline (`services/answer.js`) — must work like this
 
-- Pure functions, no LLM, no network.
-- Values only from `src/data/tables/*.json`. Each table entry must have:
-  ```json
-  { "source": { "rule": "56", "page": 78 }, "verified_by": "name or null", "verified_on": "2026-10-11 or null" }
-  ```
-- If `verified_by` is `null` → return `status: "manual_check"`, `value: null`.
-- Inputs outside the table ranges → `manual_check` with a clear note. Do not extrapolate.
-- **You (the AI) must never type table numbers from memory.** You may create the JSON skeleton and parse candidate values from the extracted text, but leave `verified_by: null`. A human checks against the PDF and fills it in.
-- Write small unit checks for the calculator (plain asserts or `node:test`) when you touch it.
+1. Validate (zod). Detect language: any Devanagari → `hi`, else `en` (unless `lang` given).
+2. Build an English search query: original text + glossary terms (`data/glossary.json`). Optionally a small LLM translate step — never required.
+3. `search.js`: BM25 over rule text (headers stripped) + title boost; top 6 rules. Include encoded rules whose `rule_ref`/`parent_rule` match.
+4. Amendment triggers (`amendments.json`): rule refs, keywords, plot area ≤ 500 from `inputs` → warning ids.
+5. If LLM not configured or fails → `status: "evidence_only"`, `ai_used: false`, evidence = best passages from top rules (quote = a sentence from the rule text, so `quote_verified: true`), `ai_error` set. **Never a 503 for questions.**
+6. LLM prompt (system): answer ONLY from the given rule texts (each labelled with its rule number); return strict JSON `{ "status": "answered"|"not_found"|"needs_information"|"manual_review", "answer": "...", "citations": [{ "rule": "56", "quote": "exact text" }], "clarifications": [{ "field": "road_width_m", "question_en": "...", "question_hi": "..." }] }`; quotes copied word for word, one sentence or one table row; answer in the question's language, ≤ 80 words, "Rule X says…"; no outside knowledge; no approval language; no arithmetic. Temperature 0.
+7. **Verify every citation** with `rulesStore.quoteInRule(rule, quote)`; drop unverified ones and any rule not in the retrieved set. No verified citation left → `not_found` with the fixed string.
+8. Build `Evidence` from `rulesStore` (`title`, `part`, pages, `findQuotePage`, `pdfUrl`) — **never from the LLM**.
+9. If the question maps to an encoded rule and `inputs` are given, the engine provides numbers; the LLM only explains them.
+10. Add `version` (with warnings), `disclaimer` (in `lang`), `related_encoded_rules`, `latency_ms`; log to `question_logs` if DB connected (question text only if `config.logQuestionText`).
 
-## LLM wrapper rules (`llm.ts`)
+## Compliance check route
 
-- Provider from `LLM_PROVIDER`, model from env (`ANTHROPIC_MODEL` / `CEREBRAS_MODEL`). Do not hard-code model names elsewhere.
-- Timeout 30 s. On missing key → `/api/health` shows `llm: "missing_key"` and `/api/ask` returns `503 LLM_UNAVAILABLE`.
-- Never log API keys or full prompts with keys. Log only: route, latency, status.
-- Only `llm.ts` talks to the LLM. Other files call `llm.ts`.
+`engine.evaluateCase(inputs, listEncodedRules(), { lang })` → add `check_run_id`, `application_id`, `run_at` → save to `compliance_checks` when DB connected (set `applications.latest_check_id` when `application_id` given) → return ComplianceResult. Same inputs + rule versions must give identical findings.
+
+## Verification endpoint (human action)
+
+Run the rule's tests (test mode) → any failure → `409 TESTS_FAILING`. Else update `encoded_rules.verification` (status, verified_by, verified_on = today, checked_pdf_pages, notes), write `review_events` `{ type: "rule_verification" }`, then `await loadEncodedRules()` so the change is live. **AI agents never call this endpoint.**
+
+## Encoded rule files — rules for AI
+
+- Keep files valid against `src/rules/schema.js`; `npm test` checks schema, quotes and pages.
+- **Never type a number from memory.** Every value must be visible in the rule text; add/keep the matching `quote` so the test proves it.
+- Files always stay `"verification": { "status": "unverified", ... }`.
+- Changing a file changes its hash → seed bumps version and resets verification (by design). Tell the user when you change a rule file.
+- New tests: add to `src/rules/tests/<RULE_ID>.tests.json` with a unique `name`.
 
 ## API rules
 
-- Responses must match `docs/API_CONTRACT.md` exactly (names, types, `snake_case`). Keep `src/types/api.ts` identical to the contract.
-- One central error handler → `{ error: { code, message } }`. No stack traces to the client.
-- CORS allow `http://localhost:5173` only.
-- Do not add endpoints not in the contract. Planned ones (`/api/precheck`) need a contract bump first.
+- Responses must match `docs/API_CONTRACT.md` exactly (names, types, `snake_case`, `id` not `_id`).
+- Errors only via `throw new HttpError(status, code, message)` / zod errors → central handler. No stack traces to clients.
+- DB-only routes use `requireDb` → `503 DB_UNAVAILABLE` without Mongo.
+- No endpoints outside the contract without a contract change.
 
-## Eval rules
+## LLM rules (`services/llm.js`)
 
-- `eval/questions.json` = the 17 questions from `sample_questions.md` with ids 1–17.
-- `eval/answer_key.json` is filled by a **human** from the PDF. If empty, the eval reports "no answer key" — do not invent one.
-- Pass = status matches AND (for answered) at least one expected rule is in the cited rules.
-- **Never special-case sample questions in code** to pass the eval.
+- Model from `ANTHROPIC_MODEL`, key from `ANTHROPIC_API_KEY` (via `config.js`). Never hard-code model ids elsewhere.
+- Only `llm.js` imports `@anthropic-ai/sdk`. Temperature 0, timeout from config, JSON output.
+- Never log prompts with keys, never log full question text unless `LOG_QUESTION_TEXT=true`.
 
 ## Code style
 
-- Small files, small functions, clear names. `async/await`, no callbacks.
-- No `any` unless unavoidable (comment why).
-- Comments only where the logic is not obvious.
-- No dead code, no commented-out blocks.
+- Small files and functions, clear names, `async/await`. JSDoc on exported functions that other files use.
+- Pure functions in `engine/` (no I/O). Comments only where logic is not obvious. No dead code, no commented-out blocks.
 
 ## When you finish a task
 
-Update `backend/MEMORY.md` (status, what changed, next steps, known issues, requests for frontend).
+Update `backend/MEMORY.md` (status table, done, next steps, known issues, requests for frontend).

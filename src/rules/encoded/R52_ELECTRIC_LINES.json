@@ -1,0 +1,158 @@
+{
+  "rule_id": "R52_ELECTRIC_LINES",
+  "rule_ref": "52",
+  "parent_rule": "52",
+  "title_en": "Distance from overhead electric lines",
+  "title_hi": "ऊपरी बिजली लाइनों से दूरी",
+  "topic": "clearance",
+  "jurisdiction": "Madhya Pradesh (applies in Bhopal)",
+  "source_document": "MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf",
+  "source_version": "2025-03-06",
+  "related_rules": [],
+  "interpretation_notes": "Clearance is measured from the nearest part of the building, including verandahs and balconies. The rule says 'or that mentioned in the applicable Electricity Rules, whichever is more' — Electricity Rules are outside the supplied sources, so a pass here is only against Rule 52.",
+  "checks": [
+    {
+      "check_key": "vertical_clearance",
+      "kind": "check",
+      "title_en": "Vertical clearance from the electric line",
+      "title_hi": "बिजली लाइन से ऊर्ध्वाधर दूरी",
+      "applies_when": {
+        "all": [
+          { "field": "electric_line.present", "op": "is_true", "if_missing": "false" },
+          { "field": "electric_line.voltage_class", "op": "in", "value": ["low_medium_or_service", "high_upto_33kv"] }
+        ]
+      },
+      "required_inputs": ["electric_line.voltage_class", "electric_line.vertical_clearance_m"],
+      "logic": {
+        "type": "lookup",
+        "input": "electric_line.voltage_class",
+        "missing_key": "manual_review",
+        "map": { "low_medium_or_service": 2.5, "high_upto_33kv": 3.7 }
+      },
+      "compare": { "entered": "electric_line.vertical_clearance_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [
+        "Or the distance in the applicable Electricity Rules, whichever is more.",
+        "Vertical clearance is measured from the maximum sag of the line (52(2))."
+      ],
+      "notes_hi": [
+        "या लागू विद्युत नियमों में दी गई दूरी, जो भी अधिक हो।",
+        "ऊर्ध्वाधर दूरी लाइन के अधिकतम झोल (सैग) से मापी जाती है (52(2))।"
+      ],
+      "source": {
+        "clause": "52(1)",
+        "page": 69,
+        "quote": "(a) Low and Medium voltage 2.5 1.2 lines and service lines (b) High voltage lines up to and 3.7 1.2 including 33000 volts"
+      },
+      "extra_quotes": [
+        { "clause": "52(1)", "page": 69, "quote": "The minimum distance between the building and any overhead electric supply line shall be as mentioned herein below or that mentioned in the applicable Electricity Rules, whichever is more." }
+      ],
+      "explain_en": "Minimum vertical clearance for this line type is {required} m (Rule 52(1)).",
+      "explain_hi": "इस प्रकार की लाइन के लिए न्यूनतम ऊर्ध्वाधर दूरी {required} मी. है (नियम 52(1))।"
+    },
+    {
+      "check_key": "horizontal_clearance",
+      "kind": "check",
+      "title_en": "Horizontal clearance from the electric line",
+      "title_hi": "बिजली लाइन से क्षैतिज दूरी",
+      "applies_when": {
+        "all": [
+          { "field": "electric_line.present", "op": "is_true", "if_missing": "false" },
+          { "field": "electric_line.voltage_class", "op": "in", "value": ["low_medium_or_service", "high_upto_33kv"] }
+        ]
+      },
+      "required_inputs": ["electric_line.voltage_class", "electric_line.horizontal_clearance_m"],
+      "logic": {
+        "type": "lookup",
+        "input": "electric_line.voltage_class",
+        "missing_key": "manual_review",
+        "map": { "low_medium_or_service": 1.2, "high_upto_33kv": 1.2 }
+      },
+      "compare": { "entered": "electric_line.horizontal_clearance_m", "operator": "gte" },
+      "unit": "m",
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [
+        "Or the distance in the applicable Electricity Rules, whichever is more.",
+        "Horizontal clearance is measured from the maximum deflection due to wind pressure (52(2))."
+      ],
+      "notes_hi": [
+        "या लागू विद्युत नियमों में दी गई दूरी, जो भी अधिक हो।",
+        "क्षैतिज दूरी हवा के दबाव से अधिकतम विचलन से मापी जाती है (52(2))।"
+      ],
+      "source": {
+        "clause": "52(1)",
+        "page": 69,
+        "quote": "(a) Low and Medium voltage 2.5 1.2 lines and service lines (b) High voltage lines up to and 3.7 1.2 including 33000 volts"
+      },
+      "explain_en": "Minimum horizontal clearance for this line type is {required} m (Rule 52(1)).",
+      "explain_hi": "इस प्रकार की लाइन के लिए न्यूनतम क्षैतिज दूरी {required} मी. है (नियम 52(1))।"
+    },
+    {
+      "check_key": "extra_high_voltage_corridor",
+      "kind": "reference",
+      "title_en": "Extra high voltage line (above 33,000 V) — clear corridor",
+      "title_hi": "अति उच्च वोल्टेज लाइन (33,000 वोल्ट से अधिक) — खुला कॉरिडोर",
+      "applies_when": {
+        "all": [
+          { "field": "electric_line.present", "op": "is_true", "if_missing": "false" },
+          { "field": "electric_line.voltage_class", "op": "eq", "value": "extra_high_above_33kv" }
+        ]
+      },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "52-ehv-corridor",
+          "text_en": "A 15 m clear horizontal corridor (7.5 m each side of the centre line) or the Electricity Rules distance, whichever is more. Measure from the line's centre line — needs manual review.",
+          "text_hi": "15 मी. खुला क्षैतिज कॉरिडोर (मध्य रेखा के दोनों ओर 7.5 मी.) या विद्युत नियमों की दूरी, जो भी अधिक हो। मध्य रेखा से माप — मैनुअल समीक्षा आवश्यक।",
+          "effect": "manual_review",
+          "reason": "ambiguous"
+        }
+      ],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": {
+        "clause": "52(1) Note",
+        "page": 69,
+        "quote": "Note: For building close to extra high voltage lines beyond 33000 volts, clear horizontal corridor of 15 meters (7.5 meter open both side of centre line), or as specified in the applicable Electricity Rules, whichever is more, shall be provided."
+      },
+      "explain_en": "For extra high voltage lines Rule 52 requires a 15 m clear corridor (7.5 m each side of the centre line) or more under the Electricity Rules.",
+      "explain_hi": "अति उच्च वोल्टेज लाइन के लिए नियम 52 में 15 मी. खुला कॉरिडोर (मध्य रेखा के दोनों ओर 7.5 मी.) या विद्युत नियमों के अनुसार अधिक आवश्यक है।"
+    },
+    {
+      "check_key": "no_balcony_violation",
+      "kind": "reference",
+      "title_en": "Verandahs and balconies also count",
+      "title_hi": "बरामदे और बालकनी भी गिने जाते हैं",
+      "applies_when": { "field": "electric_line.present", "op": "is_true", "if_missing": "false" },
+      "required_inputs": [],
+      "logic": { "type": "reference" },
+      "compare": null,
+      "unit": null,
+      "overlay": null,
+      "exceptions": [],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": {
+        "clause": "52(1)",
+        "page": 69,
+        "quote": "No verandah, balcony or the like shall be allowed to be erected or re-erected or any additions or alterations made to a building which violates this rule."
+      },
+      "explain_en": "No verandah, balcony or addition may break these clearances (Rule 52(1)).",
+      "explain_hi": "कोई बरामदा, बालकनी या परिवर्धन इन दूरियों का उल्लंघन नहीं कर सकता (नियम 52(1))।"
+    }
+  ],
+  "verification": {
+    "status": "unverified",
+    "verified_by": null,
+    "verified_on": null,
+    "checked_pdf_pages": [],
+    "notes": ""
+  }
+}

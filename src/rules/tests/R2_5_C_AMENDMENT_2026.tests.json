@@ -1,0 +1,17 @@
+[
+  { "check_key": "small_plot_amendment_warning", "name": "300 sq m plot — amendment may apply (sample Q11)", "kind": "exception",
+    "inputs": { "plot_area_sqm": 300 },
+    "expected": { "status": "manual_review" } },
+  { "check_key": "small_plot_amendment_warning", "name": "Plot exactly 500 sq m is covered", "kind": "boundary",
+    "inputs": { "plot_area_sqm": 500 },
+    "expected": { "status": "manual_review" } },
+  { "check_key": "small_plot_amendment_warning", "name": "Plot 500.5 sq m is not covered", "kind": "boundary",
+    "inputs": { "plot_area_sqm": 500.5 },
+    "expected": { "status": "not_applicable" } },
+  { "check_key": "small_plot_amendment_warning", "name": "1000 sq m plot — not applicable", "kind": "normal",
+    "inputs": { "plot_area_sqm": 1000 },
+    "expected": { "status": "not_applicable" } },
+  { "check_key": "small_plot_amendment_warning", "name": "Plot area missing", "kind": "missing_input",
+    "inputs": {},
+    "expected": { "status": "needs_information" } }
+]

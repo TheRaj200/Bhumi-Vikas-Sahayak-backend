@@ -1,0 +1,82 @@
+{
+  "rule_id": "R65_HEIGHT_LIMIT",
+  "rule_ref": "65",
+  "parent_rule": "65",
+  "title_en": "Height limit (by Rule 42 Tables 4 and 5)",
+  "title_hi": "ऊँचाई सीमा (नियम 42 की तालिका 4 और 5 अनुसार)",
+  "topic": "height",
+  "jurisdiction": "Madhya Pradesh (applies in Bhopal)",
+  "source_document": "MP_Bhumi_Vikas_Rules_2012_upto_2025-03-06_EN.pdf",
+  "source_version": "2025-03-06",
+  "related_rules": ["42", "2"],
+  "interpretation_notes": "Maximum height = the highest 'Up to' height among Rule 42 Table 4/5 rows whose minimum road width, plot area and frontage are all met. If no row is met, the maximum is taken as 12.5 m (buildings above 12.5 m need Table 4). If a plot abuts streets of different widths, the wider street governs (65(2)) — the engine uses the widest of road_width_m and additional_road_widths_m. The 'Above 90 m' row has no upper limit. This interpretation must be confirmed by the verifier.",
+  "checks": [
+    {
+      "check_key": "max_height_by_rule42",
+      "kind": "check",
+      "title_en": "Maximum building height",
+      "title_hi": "अधिकतम भवन ऊँचाई",
+      "applies_when": { "field": "proposed.building_height_m", "op": "gt", "value": 12.5 },
+      "required_inputs": ["proposed.building_height_m", "road_width_m", "plot_area_sqm", "plot_width_m"],
+      "logic": {
+        "type": "formula",
+        "formula_id": "max_height_from_rule42",
+        "params": {
+          "road_width_field": "derived.max_road_width_m",
+          "default_max_height_m": 12.5,
+          "rows": [
+            { "road_width_min_m": 12.0, "plot_area_min_sqm": 1000, "frontage_min_m": 18, "max_height_m": 18, "table": "4", "row": 1 },
+            { "road_width_min_m": 18, "plot_area_min_sqm": 1500, "frontage_min_m": 21, "max_height_m": 24, "table": "4", "row": 2 },
+            { "road_width_min_m": 24, "plot_area_min_sqm": 2000, "frontage_min_m": 30, "max_height_m": 30, "table": "4", "row": 3 },
+            { "road_width_min_m": 30, "plot_area_min_sqm": 2500, "frontage_min_m": 30, "max_height_m": 45, "table": "5", "row": 1 },
+            { "road_width_min_m": 36, "plot_area_min_sqm": 3000, "frontage_min_m": 40, "max_height_m": 60, "table": "5", "row": 2 },
+            { "road_width_min_m": 45, "plot_area_min_sqm": 3500, "frontage_min_m": 45, "max_height_m": 75, "table": "5", "row": 3 },
+            { "road_width_min_m": 60, "plot_area_min_sqm": 4000, "frontage_min_m": 50, "max_height_m": 90, "table": "5", "row": 4 },
+            { "road_width_min_m": 75, "plot_area_min_sqm": 4500, "frontage_min_m": 60, "max_height_m": null, "table": "5", "row": 5 }
+          ]
+        }
+      },
+      "compare": { "entered": "proposed.building_height_m", "operator": "lte" },
+      "unit": "m",
+      "overlay": null,
+      "exceptions": [
+        {
+          "id": "65-3-aerodrome",
+          "text_en": "Near an aerodrome the maximum height is as determined by the Airport Authority.",
+          "text_hi": "हवाई अड्डे के पास अधिकतम ऊँचाई विमानपत्तन प्राधिकरण द्वारा तय की जाती है।",
+          "when": { "field": "near_aerodrome", "op": "is_true" },
+          "effect": "manual_review",
+          "reason": "exception_may_apply",
+          "quote": "In case the building is located in vicinity of aerodromes, the maximum height of such building shall be such as determined by the Airport Authority.",
+          "page": 86
+        },
+        {
+          "id": "65-2-wider-street",
+          "text_en": "Plot abuts streets of different widths: the wider street governs the height, which may continue to a depth of 24 m along the narrower street.",
+          "text_hi": "प्लॉट अलग-अलग चौड़ाई की सड़कों से लगा है: ऊँचाई चौड़ी सड़क से तय होगी, जो संकरी सड़क के साथ 24 मी. गहराई तक जारी रह सकती है।",
+          "when": { "field": "additional_road_widths_m", "op": "exists" },
+          "effect": "note",
+          "reason": "exception_may_apply",
+          "quote": "If a plot abuts on two or more streets of different widths, the building shall be deemed to face such street which has greater width and the height of the building shall be regulated by the width of that street.",
+          "page": 86
+        }
+      ],
+      "notes_en": [],
+      "notes_hi": [],
+      "source": {
+        "clause": "65(1)",
+        "page": 85,
+        "quote": "The maximum height of a building shall be determined by the provision of Table No. 4 and 5 of Rule No. 42 as the case may be."
+      },
+      "explain_en": "With road {derived.max_road_width_m} m, plot {plot_area_sqm} sq m and frontage {plot_width_m} m, the maximum height under Rule 42 Tables 4/5 is {required} m.",
+      "explain_hi": "सड़क {derived.max_road_width_m} मी., प्लॉट {plot_area_sqm} वर्ग मी. और फ्रंटेज {plot_width_m} मी. पर नियम 42 की तालिका 4/5 के अनुसार अधिकतम ऊँचाई {required} मी. है।"
+    }
+  ],
+  "verification": {
+    "status": "unverified",
+    "verified_by": null,
+    "verified_on": null,
+    "checked_pdf_pages": [],
+    "notes": ""
+  }
+}
