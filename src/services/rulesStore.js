@@ -38,15 +38,25 @@ function buildRecord(raw) {
 }
 
 export function readRulesJsonl(filePath = config.paths.rulesJsonl) {
-  return fs
-    .readFileSync(filePath, 'utf8')
-    .split(/\r?\n/)
-    .filter((line) => line.trim())
-    .map((line) => JSON.parse(line));
+  try {
+    if (!fs.existsSync(filePath)) return [];
+    return fs
+      .readFileSync(filePath, 'utf8')
+      .split(/\r?\n/)
+      .filter((line) => line.trim())
+      .map((line) => JSON.parse(line));
+  } catch (_err) {
+    return [];
+  }
 }
 
 export function readPages(filePath = config.paths.fulltextByPage) {
-  return splitPages(fs.readFileSync(filePath, 'utf8')).map((p) => ({ ...p, norm: normalizeWhitespace(p.text) }));
+  try {
+    if (!fs.existsSync(filePath)) return [];
+    return splitPages(fs.readFileSync(filePath, 'utf8')).map((p) => ({ ...p, norm: normalizeWhitespace(p.text) }));
+  } catch (_err) {
+    return [];
+  }
 }
 
 /**

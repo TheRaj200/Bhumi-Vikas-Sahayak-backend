@@ -90,7 +90,7 @@ const applicationSchema = new Schema(
     is_sample: { type: Boolean, default: false },
     sample_key: { type: String, default: null },
     inputs: { type: Mixed, default: {} },
-    latest_check_id: { type: Schema.Types.ObjectId, ref: 'ComplianceCheck', default: null },
+    latest_check_id: { type: Schema.Types.Mixed, default: null },
   },
   timestamps,
 );
@@ -99,7 +99,8 @@ toApiJson(applicationSchema);
 
 const complianceCheckSchema = new Schema(
   {
-    application_id: { type: Schema.Types.ObjectId, ref: 'Application', default: null, index: true },
+    check_run_id: { type: String, default: null, index: true },
+    application_id: { type: Schema.Types.Mixed, default: null, index: true },
     run_at: { type: Date, required: true },
     engine_version: String,
     source_version: String,
@@ -118,7 +119,7 @@ toApiJson(complianceCheckSchema);
 
 const reviewEventSchema = new Schema(
   {
-    application_id: { type: Schema.Types.ObjectId, ref: 'Application', default: null, index: true },
+    application_id: { type: Schema.Types.Mixed, default: null, index: true },
     type: { type: String, enum: ['note', 'manual_decision', 'rule_verification'], required: true },
     rule_id: { type: String, default: null },
     finding_id: { type: String, default: null },

@@ -108,12 +108,10 @@ export const applicationsRepository = {
 
   async addReviewEvent(appId, eventData) {
     if (isDbConnected()) {
-      if (/^[a-f0-9]{24}$/i.test(appId)) {
-        const doc = new ReviewEvent({ application_id: appId, ...eventData });
-        await doc.save();
-        const lean = doc.toObject();
-        return { ...lean, id: String(lean._id) };
-      }
+      const doc = new ReviewEvent({ application_id: appId, ...eventData });
+      await doc.save();
+      const lean = doc.toObject();
+      return { ...lean, id: String(lean._id) };
     }
     const eventId = crypto.randomUUID();
     const event = {
@@ -130,7 +128,7 @@ export const applicationsRepository = {
   },
 
   async getReviewEvents(appId) {
-    if (isDbConnected() && /^[a-f0-9]{24}$/i.test(appId)) {
+    if (isDbConnected()) {
       const list = await ReviewEvent.find({ application_id: appId }).sort({ created_at: -1 }).lean();
       return list.map((doc) => ({ ...doc, id: String(doc._id || doc.id) }));
     }
@@ -153,7 +151,11 @@ export const complianceRepository = {
 
   async getCheckById(id) {
     if (isDbConnected()) {
-      return ComplianceCheck.findById(id).lean();
+      if (/^[a-f0-9]{24}$/i.test(id)) {
+        const found = await ComplianceCheck.findById(id).lean();
+        if (found) return found;
+      }
+      return ComplianceCheck.findOne({ check_run_id: id }).lean();
     }
     return memoryStore.complianceChecks.get(id) || null;
   },

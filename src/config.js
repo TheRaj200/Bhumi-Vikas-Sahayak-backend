@@ -1,15 +1,27 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const backendRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const projectRoot = path.resolve(backendRoot, '..');
-const trackDir = process.env.DATA_DIR
-  ? path.resolve(backendRoot, process.env.DATA_DIR)
-  : path.join(projectRoot, 'bhopal-impact-lab-2026-problem-statements-main', 'track-1-bhumi-vikas-sahayak');
+
+function resolveTrackDir() {
+  if (process.env.DATA_DIR) {
+    return path.resolve(backendRoot, process.env.DATA_DIR);
+  }
+  // Check if self-contained backend/data exists (e.g. Render / standalone git repo)
+  const localData = path.join(backendRoot, 'data', 'bhumi_vikas_rules_fulltext_by_page.txt');
+  if (fs.existsSync(localData)) {
+    return backendRoot;
+  }
+  return path.join(projectRoot, 'bhopal-impact-lab-2026-problem-statements-main', 'track-1-bhumi-vikas-sahayak');
+}
+
+const trackDir = resolveTrackDir();
 
 export const config = {
   port: Number(process.env.PORT) || 8000,
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  corsOrigin: process.env.CORS_ORIGIN ? (process.env.CORS_ORIGIN.includes(',') ? process.env.CORS_ORIGIN.split(',').map((s) => s.trim()) : process.env.CORS_ORIGIN) : true,
 
   mongo: {
     uri: process.env.MONGODB_URI || '',
